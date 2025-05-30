@@ -1,4 +1,4 @@
-const { getTime } = global.utils;
+const { getTime, drive } = global.utils;
 if (!global.temp.welcomeEvent)
 	global.temp.welcomeEvent = {};
 
@@ -26,10 +26,10 @@ module.exports = {
 			session2: "noon",
 			session3: "afternoon",
 			session4: "evening",
-			welcomeMessage: "Thank you for inviting me to the group!\nBot prefix: %1\nTo view the list of commands, please enter: %1help",
+			welcomeMessage: "[✅]𝗖𝗢𝗡𝗡𝗘𝗖𝗧𝗘𝗗\n━━━━━━━━━━━\n➤﹝🌐﹞𝙿𝚛𝚎𝚏𝚒𝚡「%1」\n𝗕𝗢𝗧:💬»𝗔𝗘𝗦𝗧𝗛𝗘𝗥\n➤[🛄]𝗢𝗪𝗡𝗘𝗥 :\n✞︎https://www.facebook.com/thegodess.aesther✞︎\n",
 			multiple1: "you",
 			multiple2: "you guys",
-			defaultWelcomeMessage: `Hello {userName}.\nWelcome {multiple} to the chat group: {boxName}\nHave a nice {session} 😊`
+			defaultWelcomeMessage: `( ◍ • ᴗ • ◍ ) 𝗛i ‼️\n━━━━━━━━━━\n[🆔] {userName}\n[🌐] {boxName}\n[🪅] prefix : [@] \n━━━━━━━━━━\nbe 𝗞ind & 𝗡ice here`
 		}
 	},
 
@@ -114,6 +114,16 @@ module.exports = {
 
 					form.body = welcomeMessage;
 
+					if (threadData.data.welcomeAttachment) {
+						const files = threadData.data.welcomeAttachment;
+						const attachments = files.reduce((acc, file) => {
+							acc.push(drive.getFile(file, "stream"));
+							return acc;
+						}, []);
+						form.attachment = (await Promise.allSettled(attachments))
+							.filter(({ status }) => status == "fulfilled")
+							.map(({ value }) => value);
+					}
 					message.send(form);
 					delete global.temp.welcomeEvent[threadID];
 				}, 1500);
